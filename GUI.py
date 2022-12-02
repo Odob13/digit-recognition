@@ -24,6 +24,7 @@ def MyProject():
  
     # Image is captured from canvas and is resized to (28 X 28) px
     img = ImageGrab.grab().crop((x, y, x1, y1)).resize((28, 28))
+    # img = img.convert('L')
     img.save('current.png')
  
     # Converting rgb to grayscale image
