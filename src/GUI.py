@@ -10,7 +10,7 @@ window.title("Handwritten digit recognition")
 l1 = Label()
 
 # Loading model
-model = keras.models.load_model('src/trained_model.h5')
+model = keras.models.load_model('src/models/og_model.h5')
 
 def MyProject():
     global l1
