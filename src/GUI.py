@@ -6,11 +6,15 @@ import imageio
 
 # Create GUI window
 window = Tk()
-window.title("Handwritten digit recognition")
+window.title("Reconocimiento de Digitos escritos a mano")
 l1 = Label()
 
-# Loading model
-model = keras.models.load_model('src/models/og_model.h5')
+# Loading original model
+# model = keras.models.load_model('src/models/og_model.h5')
+
+# Loading 32-neuron with convolution regressor model
+model = keras.models.load_model('src/models/small_conv_reg_model.h5')
+
 
 def MyProject():
     global l1
@@ -23,22 +27,24 @@ def MyProject():
     x1 = x + widget.winfo_width()
     y1 = y + widget.winfo_height()
 
-    # Image is captured from canvas and is resized to (28 X 28) px
+    # Capture image and resize
     img = ImageGrab.grab().crop((x, y, x1, y1)).resize((28, 28))
     img.save('img/current.png')
 
-    # Converting rgb to grayscale image
+    # Import and prepare
     im = imageio.imread("img/current.png")
-    gray = np.dot(im[...,:3], [0.299, 0.587, 0.114])
+    gray = np.dot(im[..., :3], [0.299, 0.587, 0.114])
     gray = gray.reshape(1, 28, 28, 1)
     gray /= 255
 
-    # Calling function for prediction
+    # Prediction function
     prediction = model.predict(gray)
 
-    # Displaying the result
-    l1 = Label(window, text="Digit = " + str(prediction.argmax()), font=('Algerian', 20))
-    l1.place(x=230, y=420)
+    # Display the result
+    l1 = Label(window, text="Dígito = " + str(prediction.argmax()),
+               font=('Cambria', 20), bg='#00C2EB')
+    l1.place(x=245, y=420)
+
 
 lastx, lasty = None, None
 
@@ -54,29 +60,35 @@ def event_activation(event):
     cv.bind('<B1-Motion>', draw_lines)
     lastx, lasty = event.x, event.y
 
-# To draw on canvas
+# Draw on canvas
 def draw_lines(event):
     global lastx, lasty
     x, y = event.x, event.y
-    cv.create_line((lastx, lasty, x, y), width=30, fill='white', capstyle=ROUND, smooth=TRUE, splinesteps=12)
+    cv.create_line((lastx, lasty, x, y), width=30, fill='white',
+                   capstyle=ROUND, smooth=TRUE, splinesteps=12)
     lastx, lasty = x, y
 
+
 # Labels
-L1 = Label(window, text="Handwritten Digit Recoginition", font=('Algerian', 25), fg="blue")
-L1.place(x=35, y=10, anchor="center")
+L1 = Label(window, text="Reconocimiento de Digitos",
+           font=('Cambria', 25), bg='#00C2EB', fg="black")
+L1.place(x=100, y=10)
 
 # Clear button
-b1 = Button(window, text="1. Clear Canvas", font=('Algerian', 15), bg="orange", fg="black", command=clear_widget)
+b1 = Button(window, text="Limpiar", font=('Cambria', 15),
+            bg="orange", fg="black", command=clear_widget)
 b1.place(x=120, y=370)
 
 # Predict button
-b2 = Button(window, text="2. Prediction", font=('Algerian', 15), bg="white", fg="red", command=MyProject)
-b2.place(x=320, y=370)
+b2 = Button(window, text="Predicción", font=('Cambria', 15),
+            bg="orange", fg="black", command=MyProject)
+b2.place(x=365, y=370)
 
-# Setting properties of canvas
+# Canvas properties
 cv = Canvas(window, width=350, height=290, bg='black')
 cv.place(x=120, y=70)
 
 cv.bind('<Button-1>', event_activation)
 window.geometry("600x500")
+window.configure(bg='#00C2EB')
 window.mainloop()
