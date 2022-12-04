@@ -13,7 +13,7 @@ l1 = Label()
 # model = keras.models.load_model('src/models/og_model.h5')
 
 # Loading 32-neuron with convolution regressor model
-model = keras.models.load_model('src/models/small_conv_reg_model.h5')
+model = keras.models.load_model('models/small_conv_reg_model.h5')
 
 
 def MyProject():
